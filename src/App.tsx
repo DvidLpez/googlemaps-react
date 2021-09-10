@@ -1,25 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+import { FC, Fragment, ReactElement } from 'react';
+import { GoogleMap, useLoadScript } from '@react-google-maps/api';
+
+
+
+const containerStyle = {
+  width: '100%',
+  height: '100vh'
+};
+
+const defaultProps = {
+  center: {
+    lat: 41.426437083885936,
+    lng: -15.383096850269428
+  },
+  zoom: 6
+};
+
+const options = {
+  zoomControl: false,
+}
+
+const libraries: ('places')[] = ['places'];
+
+const App: FC = (): ReactElement => {
+
+  const { isLoaded, loadError} = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_APIKEY || '',
+    libraries,
+  })
+
+  if(loadError) return <p>"Error loading maps"</p>;
+  if (!isLoaded) return <p>"Cargando mapas"</p>;
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+  <Fragment>
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={defaultProps.center}
+          zoom={defaultProps.zoom}
+          options={options}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+        </GoogleMap>
+      </Fragment>
   );
 }
 
