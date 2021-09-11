@@ -3,8 +3,7 @@ import {
   Fragment,
   ReactElement,
   useCallback,
-  useRef,
-  useState,
+  useRef
 } from "react";
 import { isMobile } from "react-device-detect";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
@@ -12,16 +11,8 @@ import SearchBar from "./components/searchInput/searchInput";
 import "./App.css";
 import Loading from "./components/loading/loading";
 import Error from "./components/error/error";
-
-interface TMarker {
-  long: number;
-  lat: number;
-}
-
-interface TMapRef {
-  panTo: Function;
-  setZoom: Function;
-}
+import { useSelector } from "react-redux";
+import { IMapRef, IReduxState } from "./interfaces";
 
 const containerStyle = {
   width: "100%",
@@ -51,20 +42,15 @@ const App: FC = (): ReactElement => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_APIKEY || "",
     libraries,
   });
-  const [markers, setMarkers] = useState<TMarker[]>([]);
-  const mapRef = useRef<TMapRef>();
+
+  const markers  = useSelector((state:IReduxState) => state.data.markers);
+  
+  const mapRef = useRef<IMapRef>();
   const onLoadMap = useCallback((map) => (mapRef.current = map), []);
 
-  const panTo = useCallback(({ lat, lng }) => {
+  const goToMap = useCallback(({lat, lng}) => {
     mapRef.current?.panTo({ lat, lng });
     mapRef.current?.setZoom(11);
-    setMarkers((markers) => [
-      ...markers,
-      {
-        lat: lat,
-        long: lng,
-      },
-    ]);
   }, []);
 
   if (loadError) return <Error />;
@@ -72,7 +58,7 @@ const App: FC = (): ReactElement => {
 
   return (
     <Fragment>
-      <SearchBar panTo={panTo} />
+      <SearchBar goToMap={goToMap} />
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={defaultProps.center}
@@ -80,10 +66,13 @@ const App: FC = (): ReactElement => {
         options={options}
         onLoad={onLoadMap}
       >
-        {markers.map((marker, index) => (
+        { markers.map((marker, index) => (
           <Marker
             key={index}
-            position={{ lat: marker.lat, lng: marker.long }}
+            position={{ 
+              lat: marker.location.lat, 
+              lng: marker.location.lng 
+            }}
             icon={{
               url: "/pin.png",
               scaledSize: new window.google.maps.Size(33, 50),
