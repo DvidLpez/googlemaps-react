@@ -22,6 +22,7 @@ const SearchBar: FC<TSearch> = ({ goToMap }): ReactElement => {
       suggestions: { status, data },
       clearSuggestions,
    } = usePlacesAutocomplete({
+      cache: 24 * 60 * 60,
       requestOptions: {
          location: new google.maps.LatLng(41.95006417653779, -3.419972613508702),
          radius: 500 * 1000,
