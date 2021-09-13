@@ -4,10 +4,15 @@ export interface IMarker {
     lat: number;
     lng: number;
   }
-  city: google.maps.GeocoderAddressComponent;
-  region: google.maps.GeocoderAddressComponent;
-  province: google.maps.GeocoderAddressComponent;
-  country: google.maps.GeocoderAddressComponent;
+  country?: string;
+  area_level_1?: string;
+  area_level_2?: string;
+  area_level_3?: string;
+  area_level_4?: string;
+  locality?: string;
+  postal_code?: string;
+  route?: string;
+  street_number?: string;
 }
 
 export interface IMapRef {
