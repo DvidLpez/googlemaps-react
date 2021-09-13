@@ -15,24 +15,22 @@ import { useSelector } from "react-redux";
 import { IMapRef, IMarker, IReduxState } from "../../interfaces";
 import InfoBox from "../infoBox/infoBox";
 
-const containerStyle = {
-  width: "100%",
-  height: "100vh",
-};
-
 const defaultProps = {
+  containerStyle: {
+    width: "100%",
+    height: "100vh",
+  },
   center: {
     lat: isMobile ? 41.95006417653779 : 41.326437083885936,
     lng: isMobile ? -3.419972613508702 : -12.383096850269428,
   },
   zoom: isMobile ? 5 : 6,
-};
-
-const options = {
-  zoomControl: false,
-  streetViewControl: false,
-  mapTypeControl: false,
-  fullscreenControl: false,
+  options: {
+    zoomControl: false,
+    streetViewControl: false,
+    mapTypeControl: false,
+    fullscreenControl: false,
+  }
 };
 
 const libraries: "places"[] = ["places"];
@@ -55,6 +53,8 @@ const GoogleMapApp: FC = (): ReactElement => {
     mapRef.current?.setZoom(11);
   }, []);
 
+  const {containerStyle, center, zoom, options} = defaultProps;
+
   if (loadError) return <Error text="Upps! Error de conexión, prueba más tarde..." />;
   if (!isLoaded) return <Loading text="Cargando google maps..." />;
 
@@ -63,8 +63,8 @@ const GoogleMapApp: FC = (): ReactElement => {
       <SearchBar goToMap={goToMap} />
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={defaultProps.center}
-        zoom={defaultProps.zoom}
+        center={center}
+        zoom={zoom}
         options={options}
         onLoad={onLoadMap}
       >
