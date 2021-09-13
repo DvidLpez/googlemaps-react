@@ -13,7 +13,7 @@ import Loading from "../loading/loading";
 import Error from "../error/error";
 import { useSelector } from "react-redux";
 import { IMapRef, IMarker, IReduxState } from "../../interfaces";
-import InfoBox from "../infoBox/InfoBox";
+import InfoBox from "../infoBox/infoBox";
 
 const containerStyle = {
   width: "100%",
