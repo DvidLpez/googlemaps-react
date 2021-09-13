@@ -1,8 +1,10 @@
 import { MARKER_OK } from '../types';
 import { IAction, IMarkerState } from '../../interfaces/index';
 
+const data = localStorage.getItem("markers_storage");
+
 const initialState: IMarkerState = {
-  markers: []
+  markers: data ? JSON.parse(data) : []
 };
 
 const markerReducer = (state = initialState, action: IAction): IMarkerState => {

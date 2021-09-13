@@ -31,6 +31,14 @@ const SearchBar: FC<TSearch> = ({ goToMap }): ReactElement => {
    });
    const dispatch = useDispatch();
    const markers  = useSelector((state:IReduxState) => state.data.markers);
+
+   const setToLocalStorage = (ubication: IMarker) => {
+      const data = localStorage.getItem("markers_storage");
+      const localMarkers = data ? JSON.parse(data) : [];
+      localMarkers.push(ubication);
+      localStorage.setItem("markers_storage",JSON.stringify(localMarkers));
+    };
+
    const checkMarkerInRedux = (ubication: IMarker) => {
       let isUbicationInRedux = false;
       markers.forEach(element => {
@@ -41,8 +49,10 @@ const SearchBar: FC<TSearch> = ({ goToMap }): ReactElement => {
       });
       if(!isUbicationInRedux) {
          dispatch(setMarketToRedux(ubication));
-      }
+         setToLocalStorage(ubication);
+      }  
    }
+
    const selectedPlace = async (address: string) => {
       setValue(address, false);
       clearSuggestions();
