@@ -5,13 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RotateStyled, WrapperLoadingStyled } from "./loading.style";
 import { TextStyled } from "../common/common.style";
 
-const Loading: FC = (): ReactElement => {
+const Loading: FC <{text:string}>= ({text}): ReactElement => {
   return (
     <WrapperLoadingStyled>
       <RotateStyled>
-        <FontAwesomeIcon icon={faSpinner} />
+        <FontAwesomeIcon data-testid="loading-icon-test" icon={faSpinner} />
       </RotateStyled>
-      <TextStyled>Cargando mapa...</TextStyled>
+      <TextStyled>{text}</TextStyled>
     </WrapperLoadingStyled>
   );
 };

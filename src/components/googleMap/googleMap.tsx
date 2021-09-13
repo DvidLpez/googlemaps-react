@@ -3,16 +3,17 @@ import {
   Fragment,
   ReactElement,
   useCallback,
-  useRef
+  useRef,
+  useState
 } from "react";
 import { isMobile } from "react-device-detect";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import SearchBar from "./components/searchInput/searchInput";
-import "./App.css";
-import Loading from "./components/loading/loading";
-import Error from "./components/error/error";
+import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps/api";
+import SearchBar from "../searchInput/searchInput";
+import Loading from "../loading/loading";
+import Error from "../error/error";
 import { useSelector } from "react-redux";
-import { IMapRef, IReduxState } from "./interfaces";
+import { IMapRef, IMarker, IReduxState } from "../../interfaces";
+import InfoBox from "../infoBox/InfoBox";
 
 const containerStyle = {
   width: "100%",
@@ -36,7 +37,7 @@ const options = {
 
 const libraries: "places"[] = ["places"];
 
-const App: FC = (): ReactElement => {
+const GoogleMapApp: FC = (): ReactElement => {
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_APIKEY || "",
@@ -44,6 +45,7 @@ const App: FC = (): ReactElement => {
   });
 
   const markers  = useSelector((state:IReduxState) => state.data.markers);
+  const [selectedMarker, setSelectedMarker] = useState<IMarker>();
   
   const mapRef = useRef<IMapRef>();
   const onLoadMap = useCallback((map) => (mapRef.current = map), []);
@@ -53,8 +55,8 @@ const App: FC = (): ReactElement => {
     mapRef.current?.setZoom(11);
   }, []);
 
-  if (loadError) return <Error />;
-  if (!isLoaded) return <Loading />;
+  if (loadError) return <Error text="Upps! Error de conexión, prueba más tarde..." />;
+  if (!isLoaded) return <Loading text="Cargando google maps..." />;
 
   return (
     <Fragment>
@@ -77,11 +79,26 @@ const App: FC = (): ReactElement => {
               url: "/pin.png",
               scaledSize: new window.google.maps.Size(33, 50),
             }}
+            onClick={ ()=> setSelectedMarker(marker)}
           />
         ))}
+
+        {
+          selectedMarker && (
+            <InfoWindow
+              position={{
+                lat: selectedMarker.location.lat,
+                lng: selectedMarker.location.lng
+              }}
+              onCloseClick={() => setSelectedMarker(undefined)}
+            >
+              <InfoBox marker={selectedMarker} />
+            </InfoWindow>
+          )
+        }
       </GoogleMap>
     </Fragment>
   );
 };
 
-export default App;
+export default GoogleMapApp;

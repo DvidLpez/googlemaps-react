@@ -5,11 +5,11 @@ import { faBomb } from "@fortawesome/free-solid-svg-icons";
 import { WrapperErrorStyled } from "./error.style";
 import { TextStyled } from "../common/common.style";
 
-const Error: FC = (): ReactElement => {
+const Error: FC<{text:string}> = ({text}): ReactElement => {
   return (
     <WrapperErrorStyled>
-      <FontAwesomeIcon icon={faBomb} className="icon_error" />
-      <TextStyled>Upps!! Ha fallado la conexión...</TextStyled>
+      <FontAwesomeIcon data-testid="error-icon-test" icon={faBomb} className="icon_error" />
+      <TextStyled>{text}</TextStyled>
     </WrapperErrorStyled>
   );
 };
