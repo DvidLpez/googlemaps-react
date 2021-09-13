@@ -9,10 +9,10 @@ import {
    SelectorStyled,
    ComboboxStyled,
 } from "./searchInput.style";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setMarketToRedux } from "../../redux/actions/markerActions";
 import { parserMarker } from "../../parsers/marker";
-import { TSearch } from "../../interfaces";
+import { IMarker, IReduxState, TSearch } from "../../interfaces";
 
 const SearchBar: FC<TSearch> = ({ goToMap }): ReactElement => {
    const {
@@ -30,7 +30,19 @@ const SearchBar: FC<TSearch> = ({ goToMap }): ReactElement => {
       debounce: 400,
    });
    const dispatch = useDispatch();
-
+   const markers  = useSelector((state:IReduxState) => state.data.markers);
+   const checkMarkerInRedux = (ubication: IMarker) => {
+      let isUbicationInRedux = false;
+      markers.forEach(element => {
+         if(element.location.lat === ubication.location.lat && 
+            element.location.lng === ubication.location.lng
+         )
+            isUbicationInRedux = true;
+      });
+      if(!isUbicationInRedux) {
+         dispatch(setMarketToRedux(ubication));
+      }
+   }
    const selectedPlace = async (address: string) => {
       setValue(address, false);
       clearSuggestions();
@@ -39,7 +51,7 @@ const SearchBar: FC<TSearch> = ({ goToMap }): ReactElement => {
          const marker = parserMarker(results[0]);
          const { lat, lng } = marker.location;
          goToMap({ lat, lng });
-         dispatch(setMarketToRedux(marker));
+         checkMarkerInRedux(marker);
       } catch (error) {
          console.log(error);
       }
