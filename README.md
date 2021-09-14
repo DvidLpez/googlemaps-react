@@ -64,7 +64,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### Run eject
 ```
-yarn eject
+npm run eject
 ```
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
